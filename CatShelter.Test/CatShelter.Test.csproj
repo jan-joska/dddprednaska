@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CatShelter.Application\CatShelter.Application.csproj" />
+    <ProjectReference Include="..\CatShelter.Domain\CatShelter.Domain.csproj" />
+    <ProjectReference Include="..\CatShelter.Infrastructure\CatShelter.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
