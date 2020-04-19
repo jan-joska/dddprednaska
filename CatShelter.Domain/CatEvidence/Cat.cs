@@ -5,9 +5,20 @@ using System.Linq;
 
 namespace CatShelter.Domain.CatEvidence
 {
+    public interface IDomainEvent
+    {
+    }
+
+    public class CatNeuteredEvent : IDomainEvent
+    {
+        public DateTime NeuteredDate { get; set; }
+        public string InitiatedBy { get; set; }
+    }
+
     public class Cat
     {
         private readonly IList<CatRecord> _catRecords = new List<CatRecord>();
+        private readonly IList<CatEvent> _domainEvents = new List<CatEvent>();
         private readonly IList<Vaccination> _vaccinations = new List<Vaccination>();
 
         protected Cat()
@@ -38,11 +49,6 @@ namespace CatShelter.Domain.CatEvidence
 
         public virtual bool MayBeVaccinated(DateTime dateOfVaccination)
         {
-            if (dateOfVaccination < DateTime.Now)
-            {
-                throw new ArgumentOutOfRangeException("Vaccination date is in past");
-            }
-
             return new NoVaccinationInLast20Days(_vaccinations.ToImmutableArray(), DateTime.Now).Satisfies();
         }
 
@@ -55,11 +61,21 @@ namespace CatShelter.Domain.CatEvidence
 
             Neutered = true;
             AddRecord("Cat was neutered");
+            RaiseDomainEvent(new CatNeuteredEvent
+            {
+                InitiatedBy = Environment.UserName,
+                NeuteredDate = DateTime.Now
+            });
         }
 
-        protected virtual void AddRecord(string text)
+        public virtual void AddRecord(string text)
         {
-            _catRecords.Add(new CatRecord(this,DateTime.Now, text));
+            _catRecords.Add(new CatRecord(this, DateTime.Now, text));
+        }
+
+        protected virtual void RaiseDomainEvent(IDomainEvent domainEvent)
+        {
+            _domainEvents.Add(new CatEvent(this, domainEvent));
         }
     }
 }

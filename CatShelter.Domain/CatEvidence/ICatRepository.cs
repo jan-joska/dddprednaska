@@ -4,13 +4,15 @@ using System.Text;
 
 namespace CatShelter.Domain.CatEvidence
 {
-    public interface ICatRepository
+    public interface IUowInjectable
     {
+        void Inject(IUnitOfWork uow);
+    }
 
+    public interface ICatRepository : IUowInjectable
+    {
         void Save(Cat cat);
-
-
-        Cat GetById(int id);
+        Maybe<Cat> GetById(int id);
 
     }
 }

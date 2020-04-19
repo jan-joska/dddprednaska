@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using CatShelter.Application;
+using CatShelter.Domain;
 using CatShelter.Domain.CatEvidence;
 using NHibernate;
 
@@ -6,21 +8,26 @@ namespace CatShelter.Infrastructure
 {
     public class CatRepository : ICatRepository
     {
-        private readonly ISession _session;
-
-        public CatRepository(ISession session)
-        {
-            _session = session;
-        }
-
+        private  IUnitOfWork _uow;
+        
         public void Save(Cat cat)
         {
-            _session.SaveOrUpdate(cat);
+            _uow.SaveOrUpdate(cat);
         }
 
-        public Cat GetById(int id)
+        public Maybe<Cat> GetById(int id)
         {
-            return _session.Query<Cat>().SingleOrDefault(i => i.Id == id);
+            return _uow.Query<Cat>().SingleOrDefault(i => i.Id == id);
+        }
+
+        public void InjectUow(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
+
+        public void Inject(IUnitOfWork uow)
+        {
+            _uow = uow;
         }
     }
 }
