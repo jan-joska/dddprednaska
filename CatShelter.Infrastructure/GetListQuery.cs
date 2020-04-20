@@ -9,11 +9,6 @@ using Dapper;
 
 namespace CatShelter.Infrastructure
 {
-
-    
-
-    
-
     public class GetCatDetailQuery : IGetCatDetailQuery
     {
         public CatDetailDto GetDetail(int id)
